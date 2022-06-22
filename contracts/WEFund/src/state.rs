@@ -1,8 +1,8 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Uint128, Coin, StdResult, Storage};
-use cw_storage_plus::{Item, Map, U128Key};
+use cosmwasm_std::{Addr, Uint128, Uint64, Coin, StdResult, Storage};
+use cw_storage_plus::{Item, Map};
 //------------Config---------------------------------------
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
@@ -90,7 +90,7 @@ pub struct ProjectState{
     pub service_charity: String,
     pub professional_link: String,
 //------------------------------------------------------------------------------
-    pub project_id: Uint128,
+    pub project_id: Uint64,
     pub creator_wallet: Addr,
     pub project_collected: Uint128,
 
@@ -116,19 +116,19 @@ pub struct ProjectState{
 
     pub token_addr: Addr,
 }
-pub const PROJECT_SEQ: Item<Uint128> = Item::new("prj_seq");
-pub const PROJECTSTATES: Map<U128Key, ProjectState> = Map::new("prj");
+pub const PROJECT_SEQ: Item<Uint64> = Item::new("prj_seq");
+pub const PROJECTSTATES: Map<u64, ProjectState> = Map::new("prj");
 
 pub fn save_projectstate(store: &mut dyn Storage, _prj: &mut ProjectState) 
     -> StdResult<()> 
 {
     // increment id if exists, or return 1
     let id = PROJECT_SEQ.load(store)?;
-    let id = id.checked_add(Uint128::new(1))?;
+    let id = id.checked_add(Uint64::new(1))?;
     PROJECT_SEQ.save(store, &id)?;
 
     _prj.project_id = id.clone();
-    PROJECTSTATES.save(store, id.u128().into(), &_prj)
+    PROJECTSTATES.save(store, id.u64(), &_prj)
 }
 
 //------------community array------------------------------------------------

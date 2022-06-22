@@ -3,7 +3,7 @@ pub mod query;
 mod error;
 pub mod msg;
 pub mod state;
-pub mod market;
+// pub mod market;
 
 pub use crate::error::ContractError;
 

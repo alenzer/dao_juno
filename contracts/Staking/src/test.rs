@@ -9,8 +9,6 @@ use crate::msg::{QueryMsg, ExecuteMsg, InstantiateMsg, UserInfo, CardInfo};
 
 use crate::mock_querier::{mock_dependencies};
 use cw20::Cw20ExecuteMsg;
-// use terraswap::asset::{Asset, AssetInfo};
-// use terraswap::pair::ExecuteMsg as TerraswapExecuteMsg;
 
 #[test]
 fn workflow(){

@@ -1,7 +1,7 @@
-use cosmwasm_std::{Uint128};
+use crate::state::{Milestone, TeamMember, VestingParameter};
+use cosmwasm_std::{Uint128, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use crate::state::{Milestone, TeamMember, VestingParameter};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
@@ -9,17 +9,21 @@ pub struct InstantiateMsg {
     pub wefund: Option<String>,
     pub anchor_market: Option<String>,
     pub aust_token: Option<String>,
-    pub vesting_contract: Option<String>
+    pub vesting_contract: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
-    SetConfig { admin:Option<String>,  wefund: Option<String>, 
-        anchor_market: Option<String>, aust_token:Option<String> , 
-        vesting_contract:Option<String>},
-    AddProject { 
-        project_id: Uint128,
+    SetConfig {
+        admin: Option<String>,
+        wefund: Option<String>,
+        anchor_market: Option<String>,
+        aust_token: Option<String>,
+        vesting_contract: Option<String>,
+    },
+    AddProject {
+        project_id: Uint64,
         project_company: String,
         project_title: String,
         project_description: String,
@@ -41,40 +45,70 @@ pub enum ExecuteMsg {
         cofounder_name: String,
         service_wefund: String,
         service_charity: String,
-        professional_link: String
+        professional_link: String,
     },
-    RemoveProject{project_id: Uint128 },
+    RemoveProject {
+        project_id: Uint64,
+    },
 
-    Back2Project { project_id: Uint128, backer_wallet: String, 
-        fundraising_stage: Uint128, token_amount: Uint128, 
-        otherchain:String, otherchain_wallet:String},
+    Back2Project {
+        project_id: Uint64,
+        backer_wallet: String,
+        fundraising_stage: Uint128,
+        token_amount: Uint128,
+        otherchain: String,
+        otherchain_wallet: String,
+    },
 
-    CompleteProject{ project_id: Uint128 },
-    FailProject{project_id: Uint128 },
+    CompleteProject {
+        project_id: Uint64,
+    },
+    FailProject {
+        project_id: Uint64,
+    },
 
-    TransferAllCoins{wallet: String},
+    TransferAllCoins {
+        wallet: String,
+    },
 
-    AddCommunitymember{wallet: String},
-    RemoveCommunitymember{wallet: String},
+    AddCommunitymember {
+        wallet: String,
+    },
+    RemoveCommunitymember {
+        wallet: String,
+    },
 
-    WefundApprove{project_id:Uint128},
-    SetFundraisingStage{project_id: Uint128, stage: Uint128},
-    
-    SetMilestoneVote{project_id: Uint128, wallet:String, voted: bool},
+    WefundApprove {
+        project_id: Uint64,
+    },
+    SetFundraisingStage {
+        project_id: Uint64,
+        stage: Uint128,
+    },
 
-    ReleaseMilestone{project_id: Uint128},
+    SetMilestoneVote {
+        project_id: Uint64,
+        wallet: String,
+        voted: bool,
+    },
 
-    SetProjectStatus{project_id: Uint128, status: Uint128}
+    ReleaseMilestone {
+        project_id: Uint64,
+    },
+
+    SetProjectStatus {
+        project_id: Uint64,
+        status: Uint128,
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
-    GetConfig{},
-    GetAllProject{},
-    GetProject { project_id:Uint128 },
-    GetBacker{ project_id:Uint128},
-    GetBalance{ wallet:String },
-    GetCommunitymembers{},
+    GetConfig {},
+    GetAllProject {},
+    GetProject { project_id: Uint64 },
+    GetBacker { project_id: Uint64 },
+    GetBalance { wallet: String },
+    GetCommunitymembers {},
 }
-
