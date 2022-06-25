@@ -1,8 +1,8 @@
 use crate::msg::ProjectInfo;
-use cosmwasm_std::{Addr, Coin, DepsMut, StdResult, Uint64};
+use cosmwasm_std::{Addr};
 use cw_storage_plus::{Item, Map};
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+
+
 
 pub const OWNER: Item<Addr> = Item::new("owner");
 

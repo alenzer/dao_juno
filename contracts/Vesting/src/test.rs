@@ -1,18 +1,17 @@
-use super::*;
-use cosmwasm_std::testing::{mock_env, mock_info, MOCK_CONTRACT_ADDR};
+
+use cosmwasm_std::testing::{mock_env, mock_info};
 use cosmwasm_std::{
-    from_binary, Addr, AllBalanceResponse, BalanceResponse, BankQuery, Coin, CosmosMsg, Uint128,
-    WasmMsg, Uint64,
+    from_binary, Uint128, Uint64,
 };
 
 use crate::contract::{execute, instantiate};
 use crate::msg::{
-    Config, ExecuteMsg, InstantiateMsg, ProjectInfo, QueryMsg, UserInfo, VestingParameter,
+    ExecuteMsg, InstantiateMsg, ProjectInfo, QueryMsg,
 };
 use crate::query::query;
 
 use crate::mock_querier::mock_dependencies;
-use cw20::Cw20ExecuteMsg;
+
 // use terraswap::asset::{Asset, AssetInfo};
 // use terraswap::pair::ExecuteMsg as TerraswapExecuteMsg;
 

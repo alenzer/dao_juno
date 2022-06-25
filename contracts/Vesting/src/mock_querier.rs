@@ -1,10 +1,10 @@
-use schemars::JsonSchema;
+
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
+
 
 use cosmwasm_std::testing::{MockApi, MockQuerier, MockStorage, MOCK_CONTRACT_ADDR};
 use cosmwasm_std::{
-   from_binary, from_slice, to_binary, Coin, ContractResult, CustomQuery, Decimal, Empty,
+   from_binary, from_slice, to_binary, Coin, ContractResult, CustomQuery, Empty,
    OwnedDeps, Querier, QuerierResult, QueryRequest, SystemError, SystemResult, Uint128, WasmQuery,
 };
 use cw20::{BalanceResponse as Cw20BalanceResponse, Cw20QueryMsg};

@@ -304,7 +304,7 @@ pub fn try_releasemilestone(
     )?;
 
     //----------calc declaim aust amount---aust*(release/total)-----------
-    let mut estimate_exchange_rate = total_deposited * UST / aust_balance.balance.u128();
+    let estimate_exchange_rate = total_deposited * UST / aust_balance.balance.u128();
 
     //--------get exchange rate between ust and aust ---------------------
     // let epoch: EpochStateResponse = deps.querier.query_wasm_smart(
@@ -320,7 +320,7 @@ pub fn try_releasemilestone(
     //     estimate_exchange_rate = epoch_exchange_rate;
     // }
 
-    let withdraw_amount = release_amount * UST / estimate_exchange_rate;
+    let _withdraw_amount = release_amount * UST / estimate_exchange_rate;
     let release_amount = 0; //withdraw_amount * epoch_exchange_rate / UST;
 
     //----ask aust_token for transfer to anchor martket and execute redeem_stable ----------
@@ -685,7 +685,7 @@ pub fn try_completeproject(
     )?;
 
     //----------calc declaim aust amount---aust*(release/total)-----------
-    let mut estimate_exchange_rate = total_deposited * UST / aust_balance.balance.u128();
+    let estimate_exchange_rate = total_deposited * UST / aust_balance.balance.u128();
 
     //--------get exchange rate between ust and aust ---------------------
     // let epoch: EpochStateResponse = deps.querier.query_wasm_smart(
@@ -701,7 +701,7 @@ pub fn try_completeproject(
     //     estimate_exchange_rate = epoch_exchange_rate;
     // }
 
-    let withdraw_amount = release_amount * UST / estimate_exchange_rate;
+    let _withdraw_amount = release_amount * UST / estimate_exchange_rate;
     let release_amount = 0;//withdraw_amount * epoch_exchange_rate / UST;
 
     //----ask aust_token for transfer to anchor martket and execute redeem_stable ----------
@@ -782,7 +782,7 @@ pub fn try_failproject(
     )?;
 
     //----------calc declaim aust amount---aust*(release/total)-----------
-    let mut estimate_exchange_rate = total_deposited * UST / aust_balance.balance.u128();
+    let estimate_exchange_rate = total_deposited * UST / aust_balance.balance.u128();
 
     //--------get exchange rate between ust and aust ---------------------
     // let epoch: EpochStateResponse = deps.querier.query_wasm_smart(
@@ -798,7 +798,7 @@ pub fn try_failproject(
     //     estimate_exchange_rate = epoch_exchange_rate;
     // }
 
-    let withdraw_amount = release_amount * UST / estimate_exchange_rate;
+    let _withdraw_amount = release_amount * UST / estimate_exchange_rate;
     let release_amount = 0;//withdraw_amount * epoch_exchange_rate / UST;
 
     let mut msg = Vec::new();
@@ -1129,7 +1129,7 @@ pub fn try_back2project(
 
     //----------load config and read anchor market address-----------------
     let config = CONFIG.load(deps.storage).unwrap();
-    let anchormarket = config.anchor_market;
+    let _anchormarket = config.anchor_market;
 
     //----------deposite to anchor market------------------------
     // let deposite_project = WasmMsg::Execute {

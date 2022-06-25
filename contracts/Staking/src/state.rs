@@ -1,5 +1,5 @@
-use crate::msg::{CardInfo, CardType, UserInfo};
-use cosmwasm_std::{Addr, Coin, DepsMut, StdResult, Uint128};
+use crate::msg::{CardInfo, UserInfo};
+use cosmwasm_std::{Addr, Uint128};
 use cw_storage_plus::{Item, Map};
 
 pub const OWNER: Item<Addr> = Item::new("owner");

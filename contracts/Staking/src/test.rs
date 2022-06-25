@@ -1,6 +1,5 @@
-use super::*;
-use cosmwasm_std::{from_binary, Addr, CosmosMsg, WasmMsg,
-    BankQuery, BalanceResponse, AllBalanceResponse, Coin, Uint128, Api};
+
+use cosmwasm_std::{from_binary, Addr, Uint128};
 use cosmwasm_std::testing::{mock_env, mock_info, MOCK_CONTRACT_ADDR};
 
 use crate::contract::{execute, instantiate};
@@ -8,7 +7,7 @@ use crate::query::{query};
 use crate::msg::{QueryMsg, ExecuteMsg, InstantiateMsg, UserInfo, CardInfo};
 
 use crate::mock_querier::{mock_dependencies};
-use cw20::Cw20ExecuteMsg;
+
 
 #[test]
 fn workflow(){
@@ -30,7 +29,7 @@ fn workflow(){
     };
 //instantiate
     let info = mock_info("owner", &[]);
-    let res = instantiate(deps.as_mut(), mock_env(), info.clone(), msg).unwrap();
+    let _res = instantiate(deps.as_mut(), mock_env(), info.clone(), msg).unwrap();
 
 //set starttime
     let info = mock_info("owner", &[]);

@@ -1,17 +1,17 @@
-use super::*;
+
 use cosmwasm_std::testing::{mock_env, mock_info, MOCK_CONTRACT_ADDR};
 use cosmwasm_std::{
-    from_binary, Addr, AllBalanceResponse, BalanceResponse, BankQuery, Coin, CosmosMsg, Uint128,
-    Uint64, WasmMsg,
+    from_binary, Coin, Uint128,
+    Uint64,
 };
 
 use crate::contract::{execute, instantiate};
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::query::query;
-use crate::state::{Config, Milestone, ProjectState};
+use crate::state::{Milestone, ProjectState};
 
 use crate::mock_querier::mock_dependencies;
-use cw20::Cw20ExecuteMsg;
+
 
 #[test]
 fn workflow() {

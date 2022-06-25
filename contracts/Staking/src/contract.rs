@@ -3,16 +3,16 @@ use cosmwasm_std::entry_point;
 
 use cosmwasm_std::{
     Addr, to_binary, DepsMut, Env, MessageInfo, Response,
-    Uint128, CosmosMsg, WasmMsg, Storage
+    Uint128, WasmMsg
 };
 use cw2::set_contract_version;
-use cw20::{Cw20ExecuteMsg, Cw20QueryMsg, BalanceResponse as Cw20BalanceResponse, TokenInfoResponse};
+use cw20::{Cw20ExecuteMsg};
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, UserInfo, CardInfo, CardType};
+use crate::msg::{ExecuteMsg, InstantiateMsg, UserInfo, CardType};
 use crate::state::{USER_INFOS, CARD_INFOS, OWNER, REWARD_TOKEN, START_TIME, 
     PLATIUM_CARD_NUMBER, GOLD_CARD_NUMBER, SILVER_CARD_NUMBER, BRONZE_CARD_NUMBER};
-use crate::util::{check_onlyowner, get_cardtype, manage_card, get_reward,
+use crate::util::{check_onlyowner, get_cardtype, manage_card,
         update_userinfo, get_token_balance};
 
 const WFD_TOKEN: &str = "terra1pkytkcanua4uazlpekve7qyhg2c5xwwjr4429d";
@@ -119,7 +119,7 @@ pub fn try_setconfig(
 pub fn try_deposit(
     deps: DepsMut,
     env: Env,
-    info: MessageInfo,
+    _info: MessageInfo,
     wallet: Addr,
     amount: Uint128
 )
@@ -127,7 +127,7 @@ pub fn try_deposit(
 {
     let res = USER_INFOS.may_load(deps.storage, wallet.clone())?;
     let mut user_info = match res{
-        Some(info) => {
+        Some(_info) => {
             update_userinfo(deps.storage, env.clone(), wallet.clone())?;
 
             let mut info = USER_INFOS.load(deps.storage, wallet.clone())?;
@@ -163,7 +163,7 @@ pub fn try_deposit(
 pub fn try_withdraw(
     deps: DepsMut,
     env: Env,
-    info: MessageInfo,
+    _info: MessageInfo,
     wallet: Addr,
     amount: Uint128
 )
@@ -213,7 +213,7 @@ pub fn try_withdraw(
 pub fn try_claimrewards(
     deps: DepsMut,
     env: Env,
-    info: MessageInfo,
+    _info: MessageInfo,
     wallet: Addr,
 )
     -> Result<Response, ContractError>

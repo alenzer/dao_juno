@@ -2,13 +2,12 @@
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     to_binary, Binary, Deps, Env, StdResult,
-    Uint128, QueryRequest, BankQuery,
-    Coin, AllBalanceResponse,
+    Uint128,
 };
 
-use cw20::{ Cw20QueryMsg, BalanceResponse as Cw20BalanceResponse, TokenInfoResponse };
 
-use crate::msg::{QueryMsg, UserInfo};
+
+use crate::msg::{QueryMsg};
 use crate::state::{ OWNER, REWARD_TOKEN, USER_INFOS, CARD_INFOS, START_TIME};
 use crate::util::{ get_reward };
 
@@ -33,7 +32,7 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
 
         QueryMsg::GetPendingRewards{ wallet } => {
             let user_info = USER_INFOS.load(deps.storage, wallet)?;
-            let (reward, extra) = get_reward(
+            let (reward, _extra) = get_reward(
                 user_info.amount,
                 user_info.card_type,
                 user_info.last_reward_time,

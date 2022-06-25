@@ -1,6 +1,6 @@
 use cosmwasm_std::StdError;
 use thiserror::Error;
-use cosmwasm_std::{Uint128};
+
 
 #[derive(Error, Debug)]
 pub enum ContractError {

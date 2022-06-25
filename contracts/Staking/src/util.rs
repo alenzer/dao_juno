@@ -1,10 +1,10 @@
 use crate::error::ContractError;
 
-use cosmwasm_std::{ Storage, Uint128, Addr, StdResult, StdError, Response, Env, QuerierWrapper, Querier, BalanceResponse};
-use cw20::{Cw20ExecuteMsg, Cw20QueryMsg, BalanceResponse as Cw20BalanceResponse, TokenInfoResponse};
+use cosmwasm_std::{ Storage, Uint128, Addr, StdResult, StdError, Response, Env, QuerierWrapper};
+use cw20::{Cw20QueryMsg, BalanceResponse as Cw20BalanceResponse};
 
 use crate::state::{ OWNER, PLATIUM_CARD_NUMBER, GOLD_CARD_NUMBER, SILVER_CARD_NUMBER,
-    BRONZE_CARD_NUMBER, CARD_INFOS, USER_INFOS, REWARD_TOKEN, START_TIME,
+    BRONZE_CARD_NUMBER, CARD_INFOS, USER_INFOS, START_TIME,
 };
 use crate::msg::{CardType, CardInfo};
 
@@ -16,7 +16,7 @@ pub fn check_onlyowner(storage: &dyn Storage, sender: Addr) -> Result<Response, 
     Ok(Response::new())
 }
 
-pub fn get_cardtype(storage: &dyn Storage, amount: Uint128) -> StdResult<CardType>
+pub fn get_cardtype(_storage: &dyn Storage, amount: Uint128) -> StdResult<CardType>
 {
     let platium = Uint128::from(100_000u128);
     let gold = Uint128::from(40_000u128);

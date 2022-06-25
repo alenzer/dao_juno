@@ -2,7 +2,7 @@
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     to_binary, Addr, AllBalanceResponse, BankQuery, Binary, Coin, Deps, Env, QueryRequest,
-    StdResult, Uint128, Uint64
+    StdResult, Uint64
 };
 use cw20::{BalanceResponse as Cw20BalanceResponse, Cw20QueryMsg};
 

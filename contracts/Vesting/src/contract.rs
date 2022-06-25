@@ -9,7 +9,7 @@ use cw2::set_contract_version;
 use cw20::{
     BalanceResponse as Cw20BalanceResponse, Cw20ExecuteMsg, Cw20QueryMsg, TokenInfoResponse,
 };
-use cw_storage_plus::PrimaryKey;
+
 
 use crate::error::ContractError;
 use crate::msg::{Config, ExecuteMsg, InstantiateMsg, ProjectInfo, UserInfo, VestingParameter};
@@ -382,7 +382,7 @@ pub fn try_addproject(
 }
 pub fn try_setconfig(
     deps: DepsMut,
-    info: MessageInfo,
+    _info: MessageInfo,
     admin: String,
 ) -> Result<Response, ContractError> {
     // //-----------check owner--------------------------
