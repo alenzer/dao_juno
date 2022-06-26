@@ -242,8 +242,8 @@ pub enum ExecuteMsg {
 pub enum QueryMsg {
     GetConfig {},
     GetAllProject {},
-    GetProject { project_id: Uint128 },
-    GetBacker { project_id: Uint128 },
+    GetProject { project_id: Uint64 },
+    GetBacker { project_id: Uint64 },
     GetBalance { wallet: String },
     GetCommunitymembers {},
 }

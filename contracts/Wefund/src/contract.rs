@@ -282,7 +282,7 @@ pub fn try_releasemilestone(
    _project_id: Uint64,
 ) -> Result<Response, ContractError> {
    //--------Get project info----------------------------
-   let x: ProjectState = PROJECTSTATES.load(deps.storage, _project_id.u64())?;
+   let mut x: ProjectState = PROJECTSTATES.load(deps.storage, _project_id.u64())?;
 
    //--------Checking project status-------------------------
    if x.project_status != ProjectStatus::Releasing {
@@ -551,7 +551,7 @@ pub fn try_completeproject(
    _project_id: Uint64,
 ) -> Result<Response, ContractError> {
    //--------Get project info----------------------------
-   let x: ProjectState = PROJECTSTATES.load(deps.storage, _project_id.u64())?;
+   let mut x: ProjectState = PROJECTSTATES.load(deps.storage, _project_id.u64())?;
 
    //--------Checking project status-------------------------
    if x.project_status != ProjectStatus::Releasing {
