@@ -10,10 +10,11 @@ use cw20::{
     BalanceResponse as Cw20BalanceResponse, Cw20ExecuteMsg, Cw20QueryMsg, TokenInfoResponse,
 };
 
-
 use crate::error::ContractError;
-use crate::msg::{Config, ExecuteMsg, InstantiateMsg, ProjectInfo, UserInfo, VestingParameter};
 use crate::state::{OWNER, PROJECT_INFOS};
+use Interface::vesting::{
+    Config, ExecuteMsg, InstantiateMsg, ProjectInfo, UserInfo, VestingParameter,
+};
 
 // version info for migration info
 const CONTRACT_NAME: &str = "Vesting";
@@ -232,7 +233,7 @@ pub fn try_claimpendingtokens(
     }
 
     let bank_cw20 = WasmMsg::Execute {
-        contract_addr: String::from(x.config.token_addr),
+        contract_addr: x.config.token_addr,
         msg: to_binary(&Cw20ExecuteMsg::Transfer {
             recipient: info.sender.to_string(),
             amount: amount,
@@ -274,6 +275,7 @@ pub fn try_adduser(
     }
 
     check_add_userinfo(&mut x.users[stage.u128() as usize], wallet, amount);
+    x.total[stage.u128() as usize] += amount;
     PROJECT_INFOS.save(deps.storage, project_id.u64(), &x)?;
 
     Ok(Response::new().add_attribute("action", "Add  User info"))
@@ -364,9 +366,19 @@ pub fn try_addproject(
         _vesting_params = vec![seed_param, presale_param, ido_param];
     }
 
+    let _project_info = PROJECT_INFOS.may_load(deps.storage, project_id.u64())?;
     let mut users = Vec::new();
-    for _ in _vesting_params.clone() {
-        users.push(Vec::new());
+    let mut total = Vec::new();
+
+    if _project_info != None {
+        let _project_info = _project_info.unwrap();
+        users = _project_info.users;
+        total = _project_info.total;
+    } else {
+        for _ in _vesting_params.clone() {
+            users.push(Vec::new());
+            total.push(Uint128::zero())
+        }
     }
 
     let project_info: ProjectInfo = ProjectInfo {
@@ -374,6 +386,7 @@ pub fn try_addproject(
         config: config,
         vest_param: _vesting_params,
         users: users,
+        total: total,
     };
 
     PROJECT_INFOS.save(deps.storage, project_id.u64(), &project_info)?;
@@ -382,14 +395,14 @@ pub fn try_addproject(
 }
 pub fn try_setconfig(
     deps: DepsMut,
-    _info: MessageInfo,
+    info: MessageInfo,
     admin: String,
 ) -> Result<Response, ContractError> {
     // //-----------check owner--------------------------
-    // let owner = OWNER.load(deps.storage).unwrap();
-    // if info.sender != owner {
-    //     return Err(ContractError::Unauthorized{});
-    // }
+    let owner = OWNER.load(deps.storage).unwrap();
+    if info.sender != owner {
+        return Err(ContractError::Unauthorized {});
+    }
 
     let admin_addr = deps.api.addr_validate(&admin).unwrap();
     OWNER.save(deps.storage, &admin_addr)?;

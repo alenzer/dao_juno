@@ -2,7 +2,6 @@ use cosmwasm_std::StdError;
 use thiserror::Error;
 use cosmwasm_std::{Uint128};
 
-
 #[derive(Error, Debug)]
 pub enum ContractError {
     #[error("{0}")]
@@ -56,6 +55,12 @@ pub enum ContractError {
     NotCorrectMilestoneStatus{
         step:usize, status: Uint128,
     },
+
+    #[error("Invalid Reply id")]
+    InvalidReplyId{ },
+
+    #[error("Not registered whitelist")]
+    NotRegisteredWhitelist{ },
 
     #[error("Not correct Milestone status : {aust_balance} {estimate_exchange_rate} {epoch_exchange_rate} {withdraw_amount} {release_amount}")]
     Testing{

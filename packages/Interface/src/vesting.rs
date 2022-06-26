@@ -97,4 +97,5 @@ pub struct ProjectInfo {
     pub config: Config,
     pub vest_param: Vec<VestingParameter>,
     pub users: Vec<Vec<UserInfo>>,
+    pub total: Vec<Uint128>,
 }

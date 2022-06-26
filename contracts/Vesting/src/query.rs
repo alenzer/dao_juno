@@ -2,14 +2,14 @@
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     to_binary, AllBalanceResponse, BankQuery, Binary, Coin, Deps, Env, QueryRequest, StdResult,
-    Uint128, Uint64,
+    Uint128, Uint64
 };
 
 use cw20::{BalanceResponse as Cw20BalanceResponse, Cw20QueryMsg, TokenInfoResponse};
 
 use crate::contract::calc_pending;
-use crate::msg::{Config, ProjectInfo, QueryMsg, UserInfo};
 use crate::state::{OWNER, PROJECT_INFOS};
+use Interface::vesting::{Config, ProjectInfo, QueryMsg, UserInfo};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {

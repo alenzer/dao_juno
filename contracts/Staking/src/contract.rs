@@ -3,16 +3,17 @@ use cosmwasm_std::entry_point;
 
 use cosmwasm_std::{
     Addr, to_binary, DepsMut, Env, MessageInfo, Response,
-    Uint128, WasmMsg
+    Uint128, CosmosMsg, WasmMsg, Storage
 };
 use cw2::set_contract_version;
-use cw20::{Cw20ExecuteMsg};
+use cw20::{Cw20ExecuteMsg, Cw20QueryMsg, BalanceResponse as Cw20BalanceResponse, TokenInfoResponse};
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, UserInfo, CardType};
+use Interface::staking::{ExecuteMsg, InstantiateMsg, UserInfo, CardInfo, CardType};
 use crate::state::{USER_INFOS, CARD_INFOS, OWNER, REWARD_TOKEN, START_TIME, 
-    PLATIUM_CARD_NUMBER, GOLD_CARD_NUMBER, SILVER_CARD_NUMBER, BRONZE_CARD_NUMBER};
-use crate::util::{check_onlyowner, get_cardtype, manage_card,
+    PLATIUM_CARD_NUMBER, GOLD_CARD_NUMBER, SILVER_CARD_NUMBER, BRONZE_CARD_NUMBER, DECIMALS};
+
+use crate::util::{check_onlyowner, get_cardtype, manage_card, get_reward,
         update_userinfo, get_token_balance};
 
 const WFD_TOKEN: &str = "terra1pkytkcanua4uazlpekve7qyhg2c5xwwjr4429d";
@@ -41,6 +42,12 @@ pub fn instantiate(
         .and_then(|s| deps.api.addr_validate(s.as_str()).ok()) 
         .unwrap_or(Addr::unchecked(WFD_TOKEN));
     REWARD_TOKEN.save(deps.storage, &reward_token)?;
+
+    let token_info: TokenInfoResponse = deps.querier.query_wasm_smart(
+        reward_token,
+        &Cw20QueryMsg::TokenInfo{}
+    )?;
+    DECIMALS.save(deps.storage, &token_info.decimals)?;
 
     let start_time = match msg.start_time{
         Some(time) => time,
@@ -112,6 +119,12 @@ pub fn try_setconfig(
     };
     REWARD_TOKEN.save(deps.storage, &reward_token)?;
 
+    let token_info: TokenInfoResponse = deps.querier.query_wasm_smart(
+        reward_token,
+        &Cw20QueryMsg::TokenInfo{}
+    )?;
+    DECIMALS.save(deps.storage, &token_info.decimals)?;
+
     Ok(Response::new()
         .add_attribute("action", "SetConfig"))                                
 }
@@ -119,7 +132,7 @@ pub fn try_setconfig(
 pub fn try_deposit(
     deps: DepsMut,
     env: Env,
-    _info: MessageInfo,
+    info: MessageInfo,
     wallet: Addr,
     amount: Uint128
 )
@@ -127,7 +140,7 @@ pub fn try_deposit(
 {
     let res = USER_INFOS.may_load(deps.storage, wallet.clone())?;
     let mut user_info = match res{
-        Some(_info) => {
+        Some(info) => {
             update_userinfo(deps.storage, env.clone(), wallet.clone())?;
 
             let mut info = USER_INFOS.load(deps.storage, wallet.clone())?;
@@ -163,7 +176,7 @@ pub fn try_deposit(
 pub fn try_withdraw(
     deps: DepsMut,
     env: Env,
-    _info: MessageInfo,
+    info: MessageInfo,
     wallet: Addr,
     amount: Uint128
 )
@@ -213,7 +226,7 @@ pub fn try_withdraw(
 pub fn try_claimrewards(
     deps: DepsMut,
     env: Env,
-    _info: MessageInfo,
+    info: MessageInfo,
     wallet: Addr,
 )
     -> Result<Response, ContractError>
