@@ -25,10 +25,7 @@ use Interface::wefund::{
 };
 
 use Interface::staking::CardType;
-use Interface::vesting::{
-   ExecuteMsg as VestingMsg, ProjectInfo as VestingProjectInfo, QueryMsg as VestingQuery,
-   VestingParameter as VestingParam,
-};
+use Interface::vesting::{ExecuteMsg as VestingMsg, VestingParameter as VestingParam};
 
 // version info for migration info
 const CONTRACT_NAME: &str = "WEFUND";
@@ -900,7 +897,6 @@ pub fn try_back2project(
       }
    })?;
 
-
    //---------send to Wefund with 5/100--------------------
    let bank_wefund = BankMsg::Send {
       to_address: config.wefund.to_string(),
@@ -955,13 +951,16 @@ pub fn try_registerwhitelist(
    card_type: CardType,
 ) -> Result<Response, ContractError> {
    let mut x = PROJECTSTATES.load(deps.storage, project_id.u64())?;
-   x.whitelist.push(WhitelistState {
-      wallet: info.sender,
-      card_type: card_type,
-      allocation: Uint128::zero(),
-      backed: Uint128::zero(),
-   });
-   PROJECTSTATES.save(deps.storage, project_id.u64(), &x)?;
+   let res = x.whitelist.iter().find(|x| x.wallet == info.sender);
+   if res == None {
+      x.whitelist.push(WhitelistState {
+         wallet: info.sender,
+         card_type: card_type,
+         allocation: Uint128::zero(),
+         backed: Uint128::zero(),
+      });
+      PROJECTSTATES.save(deps.storage, project_id.u64(), &x)?;
+   }
    Ok(Response::new())
 }
 

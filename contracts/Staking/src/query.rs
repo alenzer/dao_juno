@@ -28,7 +28,24 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         },
 
         QueryMsg::GetUserInfo{ wallet } => {
-            to_binary(&USER_INFOS.load(deps.storage, wallet)?)
+            let user_info = USER_INFOS.may_load(deps.storage, wallet.clone())?;
+            match user_info {
+                Some(info) => {
+                    to_binary(&info)                    
+                },
+                None => {
+                    to_binary(&UserInfo{
+                        wallet: wallet,
+                        amount: Uint128::zero(),
+                        last_withdraw_time: Uint128::zero(),
+                        reward_amount: Uint128::zero(),
+                        last_reward_time: Uint128::zero(),
+                        card_type: CardType::Other,
+                        card_number: Uint128::zero(),
+                    })
+                }
+            }
+            // to_binary(&USER_INFOS.load(deps.storage, wallet)?)
         },
 
         QueryMsg::GetPendingRewards{ wallet } => {
