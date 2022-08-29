@@ -159,7 +159,28 @@ pub fn execute(
          service_charity,
          professional_link,
       ),
-
+      ExecuteMsg::Back2ProjectWithout {
+         project_id,
+         backer_wallet,
+         denom,
+         amount,
+         fundraising_stage,
+         token_amount,
+         otherchain,
+         otherchain_wallet,
+      } => try_back2projectwithout(
+         deps,
+         _env,
+         info,
+         project_id,
+         backer_wallet,
+         denom,
+         amount,
+         fundraising_stage,
+         token_amount,
+         otherchain,
+         otherchain_wallet,
+      ),
       ExecuteMsg::Back2Project {
          project_id,
          backer_wallet,
@@ -741,6 +762,82 @@ pub fn try_addproject(
    }
 
    Ok(Response::new().add_attribute("action", "add project"))
+}
+
+pub fn try_back2projectwithout(
+   deps: DepsMut,
+   env: Env,
+   info: MessageInfo,
+   project_id: Uint64,
+   backer_wallet: String,
+   denom: String,
+   amount: Uint128,
+   fundraising_stage: Uint128,
+   token_amount: Uint128,
+   otherchain: String,
+   otherchain_wallet: String,
+) -> Result<Response, ContractError> {
+   //-------check project exist-----------------------------------
+   let res = PROJECTSTATES.may_load(deps.storage, project_id.u64());
+   if res == Ok(None) {
+      //not exist
+      return Err(ContractError::NotRegisteredProject {});
+   }
+   //--------Get project info------------------------------------
+   let mut x = PROJECTSTATES.load(deps.storage, project_id.u64())?;
+   let config = CONFIG.load(deps.storage)?;
+   let fund = Coin {
+      denom: denom,
+      amount: amount
+   };
+   let mut fund_real_back = fund.clone();
+   let mut fund_wefund = fund.clone();
+
+   //--------calc amount to desposit and to wefund
+   fund_real_back.amount = Uint128::new(fund.amount.u128() * 95 / 100);
+   fund_wefund.amount = Uint128::new(fund.amount.u128() * 5 / 100);
+
+   let backer_wallet = deps.api.addr_validate(&backer_wallet)?;
+
+   //-----sum in whitelist-------------------
+   let index = x
+      .whitelist
+      .iter()
+      .position(|x| x.wallet == backer_wallet.clone());
+   if index == None {
+      return Err(ContractError::NotRegisteredWhitelist {});
+   }
+
+   x.whitelist[index.unwrap()].backed += fund_real_back.amount;
+   x.backerbacked_amount += fund_real_back.amount;
+
+   let new_baker: BackerState = BackerState {
+      backer_wallet: backer_wallet.clone(),
+      otherchain: otherchain,
+      otherchain_wallet: otherchain_wallet,
+      amount: fund_real_back.clone(),
+   };
+
+   x.backer_states.push(new_baker);
+
+   PROJECTSTATES.update(deps.storage, project_id.u64(), |op| match op {
+      None => Err(ContractError::NotRegisteredProject {}),
+      Some(mut project) => {
+         project.project_status = x.project_status.clone();
+         project.backerbacked_amount = x.backerbacked_amount;
+         project.backer_states = x.backer_states;
+         project.whitelist = x.whitelist;
+
+         if x.project_status == ProjectStatus::Releasing {
+            //only on switching releasing status
+            project.milestone_states = x.milestone_states;
+         }
+         Ok(project)
+      }
+   })?;
+
+   Ok(Response::new()
+      .add_attribute("action", "back to project without"))
 }
 
 pub fn try_back2project(

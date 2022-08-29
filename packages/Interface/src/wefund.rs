@@ -175,7 +175,16 @@ pub enum ExecuteMsg {
     RemoveProject {
         project_id: Uint64,
     },
-
+    Back2ProjectWithout {
+        project_id: Uint64,
+        backer_wallet: String,
+        denom: String,
+        amount: Uint128,
+        fundraising_stage: Uint128,
+        token_amount: Uint128,
+        otherchain: String,
+        otherchain_wallet: String,
+    },
     Back2Project {
         project_id: Uint64,
         backer_wallet: String,
